@@ -1,122 +1,110 @@
 package com.waliahimanshu.canadia.ui.walkthrough
 
+import android.animation.ArgbEvaluator
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
-import android.view.*
-import android.widget.TextView
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.widget.FrameLayout
+import android.widget.ImageButton
+import android.widget.ImageView
 import com.waliahimanshu.canadia.ui.R
+import com.waliahimanshu.canadia.ui.browse.BrowseActivity
 
-class WalkthroughActivity : AppCompatActivity() {
 
-    /**
-     * The [android.support.v4.view.PagerAdapter] that will provide
-     * fragments for each of the sections. We use a
-     * [FragmentPagerAdapter] derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * [android.support.v4.app.FragmentStatePagerAdapter].
-     */
-    private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
+class WalkthroughActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
 
     /**
      * The [ViewPager] that will host the section contents.
      */
-    private var mViewPager: ViewPager? = null
+    private var viewPager: ViewPager? = null
+    private var evaluator = ArgbEvaluator()
+    private var page = 0
+    private var indicators: Array<ImageView>? = null
+    private var nextButton: ImageButton? = null
+    private var previousButton: ImageButton? = null
+    private var finishButton: ImageButton? = null
+    private var bottomIndicatorNav: FrameLayout? = null
+    private lateinit var colorList: IntArray
+    private var color1: Int = 0
+    private var color2: Int = 0
+    private var color3: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_walkthrough)
 
-        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
+        nextButton = findViewById(R.id.intro_btn_next)
+        previousButton = findViewById(R.id.intro_btn_previous)
+        finishButton = findViewById(R.id.intro_btn_finish)
+        bottomIndicatorNav = findViewById(R.id.bottom_indicator_nav)
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = findViewById<View>(R.id.container) as ViewPager
-        mViewPager!!.adapter = mSectionsPagerAdapter
+        viewPager = findViewById<View>(R.id.sections_view_pager) as ViewPager
+        viewPager?.adapter = SectionsPagerAdapter(supportFragmentManager)
+        viewPager?.addOnPageChangeListener(this)
 
-        val fab = findViewById<View>(R.id.fab) as FloatingActionButton
-        fab.setOnClickListener { view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show() }
+        initColors()
+        initIndicators()
+        nextButton?.setOnClickListener { viewPager?.setCurrentItem(viewPager?.currentItem!!.plus(1), true) }
+        previousButton?.setOnClickListener { viewPager?.setCurrentItem(viewPager?.currentItem!!.minus(1), true) }
+        finishButton?.setOnClickListener { startActivity(BrowseActivity.newIntent(this)) }
 
+
+        // Hide the status bar.
+        val uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
+        window.decorView.systemUiVisibility = uiOptions
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_walkthrough, menu)
-        return true
+    override fun onPageScrollStateChanged(state: Int) {
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-
-        return if (id == R.id.action_settings) {
-            true
-        } else super.onOptionsItemSelected(item)
-
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+        val colorUpdate = evaluator.evaluate(
+                positionOffset,
+                colorList[position],
+                colorList[if (position == 2) position else position + 1]) as Int
+        viewPager?.setBackgroundColor(colorUpdate)
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    class PlaceholderFragment : Fragment() {
+    override fun onPageSelected(position: Int) {
+        page = position
+        updateIndicators(page)
 
-        override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-            val rootView = inflater!!.inflate(R.layout.fragment_walkthrough, container, false)
-            val textView = rootView.findViewById<View>(R.id.section_label) as TextView
-            textView.text = getString(R.string.section_format, arguments.getInt(ARG_SECTION_NUMBER))
-            return rootView
+        when (position) {
+            0 -> viewPager?.setBackgroundColor(color1)
+            1 -> viewPager?.setBackgroundColor(color2)
+            2 -> viewPager?.setBackgroundColor(color3)
         }
 
-        companion object {
-            /**
-             * The fragment argument representing the section number for this
-             * fragment.
-             */
-            private val ARG_SECTION_NUMBER = "section_number"
+        if (position == 2) nextButton?.visibility = GONE else nextButton?.visibility = VISIBLE
+        if (position == 2) finishButton?.visibility = VISIBLE else finishButton?.visibility = GONE
+    }
 
-            /**
-             * Returns a new instance of this fragment for the given section
-             * number.
-             */
-            fun newInstance(sectionNumber: Int): PlaceholderFragment {
-                val fragment = PlaceholderFragment()
-                val args = Bundle()
-                args.putInt(ARG_SECTION_NUMBER, sectionNumber)
-                fragment.arguments = args
-                return fragment
-            }
+    private fun updateIndicators(position: Int) {
+        for (i in 0 until indicators?.size as Int) {
+            indicators?.get(i)?.setBackgroundResource(
+                    if (i == position) R.drawable.active_indicator else R.drawable.inactive_indicator
+            )
         }
     }
 
-    /**
-     * A [FragmentPagerAdapter] that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    private fun initColors() {
+        color1 = ContextCompat.getColor(this, R.color.yellow_600)
+        color2 = ContextCompat.getColor(this, R.color.red_300)
+        color3 = ContextCompat.getColor(this, R.color.light_blue_300)
+        colorList = intArrayOf(color1, color2, color3)
+    }
 
-        override fun getItem(position: Int): Fragment {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1)
-        }
+    private fun initIndicators() {
+        val indicator1 = findViewById<ImageView>(R.id.intro_indicator_0)
+        val indicator2 = findViewById<ImageView>(R.id.intro_indicator_1)
+        val indicator3 = findViewById<ImageView>(R.id.intro_indicator_2)
 
-        override fun getCount(): Int {
-            // Show 3 total pages.
-            return 3
-        }
+        indicators = arrayOf(indicator1, indicator2, indicator3)
     }
 }

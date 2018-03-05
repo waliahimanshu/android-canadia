@@ -9,6 +9,13 @@ import com.waliahimanshu.canadia.presentation.model.BufferooView
  */
 interface BrowseBufferoosContract {
 
+    interface Presenter : BasePresenter {
+
+        fun retrieveBufferoos()
+
+    }
+
+
     interface View : BaseView<Presenter> {
 
         fun showProgress()
@@ -29,10 +36,5 @@ interface BrowseBufferoosContract {
 
     }
 
-    interface Presenter : BasePresenter {
-
-        fun retrieveBufferoos()
-
-    }
 
 }

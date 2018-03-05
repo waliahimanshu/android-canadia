@@ -8,7 +8,7 @@ allprojects {
 ext {
     //Android
     androidBuildToolsVersion = "26.0.0"
-    androidMinSdkVersion = 15
+    androidMinSdkVersion = 16
     androidTargetSdkVersion = 26
     androidCompileSdkVersion = 26
 
@@ -31,6 +31,7 @@ ext {
     glideVersion = '4.0.0'
     daggerVersion = '2.11'
     glassfishAnnotationVersion = '10.0-b28'
+    lottieVersion = '2.2.0'
 
     //Testing
     robolectricVersion = '3.4.2'
@@ -179,7 +180,8 @@ ext {
             timber:             "com.jakewharton.timber:timber:${timberVersion}",
             daggerSupport:      "com.google.dagger:dagger-android-support:${daggerVersion}",
             daggerProcessor:    "com.google.dagger:dagger-android-processor:${daggerVersion}",
-            glassfishAnnotation: "org.glassfish:javax.annotation:${glassfishAnnotationVersion}"
+            glassfishAnnotation: "org.glassfish:javax.annotation:${glassfishAnnotationVersion}",
+            lottie:              "com.airbnb.android:lottie:${lottieVersion}"
     ]
 
     mobileUiTestDependencies = [

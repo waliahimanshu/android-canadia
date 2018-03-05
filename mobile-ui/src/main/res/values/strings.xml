@@ -3,4 +3,11 @@
     <string name="title_activity_walkthrough">WalkthroughActivity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="walkthrough_skip">Skip</string>
+    <string name="walkthrough_0_title">Push notification on latest Express Entry draw</string>
+    <string name="walkthrough_0_discription">Get notified will all the details, you need to know about the latest CRS (Comprehensive Ranking System) cut off</string>
+    <string name="walkthrough_1_title">Track your application steps</string>
+    <string name="walkthrough_1_discription">Get in control of dates and time for each step and share your timeline with your friends and family</string>
+    <string name="walkthrough_2_title">Stack of all the official links at one place</string>
+    <string name="walkthrough_2_discription">Keep your shit together by going through all the official links at whenever you need to!</string>
 </resources>
