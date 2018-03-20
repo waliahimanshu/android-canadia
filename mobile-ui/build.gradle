@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'jacoco-android'
 
+
 android {
     def globalConfiguration = rootProject.extensions.getByName("ext")
 
@@ -87,8 +88,10 @@ dependencies {
     implementation mobileUiDependencies.dagger
     implementation mobileUiDependencies.daggerSupport
     implementation mobileUiDependencies.lottie
+    implementation mobileUiDependencies.constraintLayout
+    implementation mobileUiDependencies.firebaseDatabase
 
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
     testImplementation mobileUiTestDependencies.kotlinJUnit
 
     kapt mobileUiDependencies.daggerCompiler
@@ -123,4 +126,7 @@ dependencies {
 
     kaptTest mobileUiDependencies.daggerCompiler
     kaptAndroidTest mobileUiDependencies.daggerCompiler
+
+    // ADD THIS AT THE BOTTOM
+    apply plugin: 'com.google.gms.google-services'
 }

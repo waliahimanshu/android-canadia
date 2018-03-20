@@ -4,7 +4,7 @@ import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
-import com.waliahimanshu.canadia.ui.BufferooApplication
+import com.waliahimanshu.canadia.ui.CanadiaApplication
 import com.waliahimanshu.canadia.ui.injection.module.ActivityBindingModule
 import com.waliahimanshu.canadia.ui.injection.module.ApplicationModule
 import com.waliahimanshu.canadia.ui.injection.scopes.PerApplication
@@ -20,6 +20,6 @@ interface ApplicationComponent {
         fun build(): ApplicationComponent
     }
 
-    fun inject(app: BufferooApplication)
+    fun inject(app: CanadiaApplication)
 
 }

@@ -7,20 +7,33 @@
 
     <application
         android:label="@string/app_name"
-        android:name=".BufferooApplication"
+        android:name=".CanadiaApplication"
         android:theme="@style/AppTheme">
-        <activity android:name=".walkthrough.WalkthroughActivity"
+        <activity
             android:label="@string/title_activity_walkthrough"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".walkthrough.WalkthroughActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".browse.BrowseActivity"
-             />
+            android:label="@string/home_activity_label"
+            android:name=".home.EERoundOfInvitationsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".browse.BrowseActivity"/>
+        <activity
+            android:label="@string/title_item_detail"
+            android:name=".home.ItemDetailActivity"
+            android:parentActivityName=".home.EERoundOfInvitationsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.waliahimanshu.canadia.ui.home.EERoundOfInvitationsActivity" />
+        </activity>
     </application>
 
 </manifest>
