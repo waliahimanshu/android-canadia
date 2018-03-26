@@ -79,7 +79,7 @@ class EERoundOfInvitationsActivity : AppCompatActivity() {
     }
 
     private fun loadData(dataSnapshot: DataSnapshot, itemList: ArrayList<RoundOfInvitationModel>) {
-        val eeCrsTable = dataSnapshot.child("ee_crs")
+        val eeCrsTable = dataSnapshot.child("ee_crs").child("2018")
         val children = eeCrsTable.children
 
         for (item: DataSnapshot in children) {

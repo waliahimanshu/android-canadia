@@ -14,4 +14,11 @@
     <string name="title_item_detail">Item Detail</string>
     <string name="invitations_issued">Invitations issued</string>
     <string name="tie_breaking_rule">Tie-breaking rule</string>
+    <string name="filter_express_entry_data">filter</string>
+    <string name="year">Year</string>
+    <string name="crs">Crs</string>
+    <string name="title_activity_filter">FilterActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

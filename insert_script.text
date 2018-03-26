@@ -1,0 +1,6 @@
+firebase database:push /ee_crs/2017 --data '{
+        "crs_draw_date" : "December 20, 2017 at 13:29:55 UTC",
+              "crs_score" : "446",
+              "ita_issues" : "2750",
+              "tie_breaker_date" : "October 02, 2017 at 14:56:53 UTC"
+    }'
