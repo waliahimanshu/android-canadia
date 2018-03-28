@@ -1,42 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-
-    <item android:title="Widgets">
+    <item android:title="Year">
         <menu>
 
             <item
-                android:title="CheckBox"
-                app:actionLayout="@layout/widget_check" />
+                android:id="@+id/year_2018"
+                android:checked="true"
+                android:icon="@drawable/ic_check_black_24dp"
+                android:title="2018"
+           />
 
-            <group android:checkableBehavior="single">
-                <item
-                    android:id="@+id/nav_first_fragment"
-                    android:icon="@drawable/ic_check_black_24dp"
-                    android:title="First" />
-                <item
-                    android:id="@+id/nav_second_fragment"
-                    android:icon="@drawable/ic_chevron_right_black_24dp"
-                    android:title="Second" />
-                <item
-                    android:id="@+id/nav_third_fragment"
-                    android:icon="@drawable/ic_arrow_forward_black_24dp"
-                    android:title="Third" />
-            </group>
+            <item
+                android:checked="true"
+                android:id="@+id/year_2017"
+                android:icon="@drawable/ic_check_black_24dp"
+                android:title="2017"
+              />
+
+            <item
+                android:icon="@drawable/ic_check_black_24dp"
+                android:title="2016"
+                 />
+
+            <item
+                android:icon="@drawable/ic_check_black_24dp"
+                android:title="2015"
+            />
+
+
         </menu>
     </item>
 
 
-    <item android:title="Sub items">
+    <item android:title="CRS">
         <menu>
             <group android:checkableBehavior="single">
                 <item
                     android:icon="@drawable/ic_arrow_forward_black_24dp"
-                    android:title="Sub item 1" />
+                    android:title="Lowest" />
                 <item
                     android:icon="@drawable/ic_arrow_forward_black_24dp"
-                    android:title="Sub item 2" />
+                    android:title="Highest" />
             </group>
         </menu>
     </item>

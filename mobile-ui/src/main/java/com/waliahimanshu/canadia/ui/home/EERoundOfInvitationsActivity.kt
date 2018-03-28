@@ -6,18 +6,20 @@ import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.CheckBox
 import android.widget.ProgressBar
+import android.widget.RadioButton
 import com.google.firebase.database.*
 import com.waliahimanshu.canadia.ui.R
 import com.waliahimanshu.canadia.ui.home.model.RoundOfInvitationModel
 import kotlinx.android.synthetic.main.activity_item_list.*
 import kotlinx.android.synthetic.main.item_list.*
+import timber.log.Timber
 
 
 class EERoundOfInvitationsActivity : AppCompatActivity() {
@@ -71,23 +73,55 @@ class EERoundOfInvitationsActivity : AppCompatActivity() {
         // Setup drawer view
 
         // Find our drawer view
-        nvDrawer =  findViewById(R.id.nvView)
+        nvDrawer = findViewById(R.id.nvView)
         // Setup drawer view
         setupDrawerContent(nvDrawer)
 
 //        setupDrawerToggle();
 
 
-        loadData()
+        val checkBoxAll = findViewById<CheckBox>(R.id.all_year)
+        val checkBox2018 = findViewById<CheckBox>(R.id.year_2018)
+        val checkBox2017 = findViewById<CheckBox>(R.id.year_2017)
+        val lowestCRS = findViewById<RadioButton>(R.id.lowestCRS)
+        val highyestCRS = findViewById<RadioButton>(R.id.highestCRS)
+
+        checkBoxAll.isChecked = true
+
+        checkBox2018.setOnCheckedChangeListener { button, isChecked ->
+
+            if (isChecked) {
+                loadData("2018")
+            } else {
+                loadData("2017")
+            }
+        }
+
+        checkBox2017.setOnCheckedChangeListener { button, isChecked ->
+
+            if (isChecked) {
+                loadData("2017")
+            } else {
+                loadData("2018")
+            }
+        }
+
+        highyestCRS.setOnCheckedChangeListener { button, isSelected ->
+            if (isSelected) {
+                loadDataByCRS("2018")
+                Timber.d("CRS-highest selected")
+            } else {
+                Timber.d("CRS-highest not selected")
+
+            }
+        }
+
+        loadData("2018")
 
 
     }
 
-    private fun setupDrawerToggle(): ActionBarDrawerToggle {
-        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
-        // and will not render the hamburger icon without it.
-        return ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-    }
+
     private fun setupDrawerContent(navigationView: NavigationView?) {
         navigationView?.setNavigationItemSelectedListener { menuItem ->
             selectDrawerItem(menuItem)
@@ -97,34 +131,30 @@ class EERoundOfInvitationsActivity : AppCompatActivity() {
 
     private fun selectDrawerItem(menuItem: MenuItem) {
 
-        when (menuItem.itemId) {
-            R.id.nav_first_fragment -> {
 
-            }
-            R.id.nav_second_fragment -> {
-
-            }
-            R.id.nav_third_fragment -> {
-
-            }
-            else -> {
-
-            }
-        }
-
-        menuItem.isChecked = true;
+        menuItem.isChecked = true
         // Set action bar title
         title = menuItem.title
         // Close the navigation drawer
         drawer?.closeDrawer(GravityCompat.END)
     }
 
-    private fun loadData(): ArrayList<RoundOfInvitationModel> {
+    private fun loadDataByCRS(string: String): ArrayList<RoundOfInvitationModel> {
         val itemList: ArrayList<RoundOfInvitationModel> = java.util.ArrayList()
 
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
+        database = database.child("ee_crs").child("2018")
+        val queryRef = database.orderByChild("crs_score")
+
+
+        queryRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                loadData(dataSnapshot, itemList)
+
+                for (item: DataSnapshot in dataSnapshot.children) {
+                    val invitationModel: RoundOfInvitationModel? = item.getValue(RoundOfInvitationModel::class.java)
+                    if (invitationModel != null) {
+                        itemList.add(invitationModel)
+                    }
+                }
                 if (itemList.isNotEmpty()) {
                     progressBar?.visibility = View.GONE
                     setupRecyclerView(item_list, itemList)
@@ -138,17 +168,35 @@ class EERoundOfInvitationsActivity : AppCompatActivity() {
         return itemList
     }
 
-    private fun loadData(dataSnapshot: DataSnapshot, itemList: ArrayList<RoundOfInvitationModel>) {
-        val eeCrsTable = dataSnapshot.child("ee_crs").child("2018")
-        val children = eeCrsTable.children
+    private fun loadData(string: String): ArrayList<RoundOfInvitationModel> {
+        val itemList: ArrayList<RoundOfInvitationModel> = java.util.ArrayList()
 
-        for (item: DataSnapshot in children) {
-            val invitationModel: RoundOfInvitationModel? = item.getValue(RoundOfInvitationModel::class.java)
-            if (invitationModel != null) {
-                itemList.add(invitationModel)
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+
+                val eeCrsTable = dataSnapshot.child("ee_crs").child(string)
+                val children = eeCrsTable.children
+
+                for (item: DataSnapshot in children) {
+                    val invitationModel: RoundOfInvitationModel? = item.getValue(RoundOfInvitationModel::class.java)
+                    if (invitationModel != null) {
+                        itemList.add(invitationModel)
+                    }
+                }
+                if (itemList.isNotEmpty()) {
+                    progressBar?.visibility = View.GONE
+                    setupRecyclerView(item_list, itemList)
+                }
             }
-        }
+
+            override fun onCancelled(dataSnapshot: DatabaseError?) {
+                TODO("logging db fetch failed")
+            }
+        })
+        return itemList
     }
+
 
     private fun setupRecyclerView(recyclerView: RecyclerView, items: ArrayList<RoundOfInvitationModel>) {
         recyclerView.adapter = RoundOfInvitationsAdapter(this, items, twoPane)

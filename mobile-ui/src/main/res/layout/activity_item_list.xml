@@ -68,10 +68,11 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:background="@android:color/white"
-        android:fitsSystemWindows="true"
-        app:menu="@menu/drawer_view"
+        android:fitsSystemWindows="true">
 
-        >
+
+        <include layout="@layout/menu_filter_layout"/>
+
 
 
     </android.support.design.widget.NavigationView>
